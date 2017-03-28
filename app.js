@@ -1,6 +1,9 @@
 var express = require('express');
 var bodyparser = require('body-parser');
 var path = require('path');
+var mongojs = require('mongojs');
+var db = mongojs('customerapp', ['users']);
+var ObjectId = mongojs.ObjectId;
 
 var app = express();
 
@@ -12,19 +15,6 @@ var app = express();
 app.use(logger);
 */
 
-var users = [{
-    name : "Hungry monkey",
-    age : 12
-},
-{
-    name : "Heath",
-    age : 20
-},
-{
-    name : "Gabe Newell",
-    age : 56
-}
-]
 
 // view engine
 app.set("view engine", "ejs");
@@ -38,10 +28,52 @@ app.use(bodyparser.urlencoded({extended:false}));
 app.use(express.static(path.join(__dirname,'public')));
 
 app.get("/", function(req,res){
+
+    db.users.find(function(err,docs){
     res.render("index", {
-        users ,
+        users : docs,
         title : "Customers"
+    })
+})
+})
+
+app.delete("/users/delete/:id",function(req,res){
+    db.users.remove({_id : ObjectId(req.params.id)},function(err){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.redirect('/');
+        }
     });
+})
+
+app.put("/users/update/:id", function(req,res){
+    
+    db.users.update({_id : ObjectId(req.params.id)}, {
+        name : "Geralt",
+        age : "38",
+        email : "Geralt@gmail.com"
+    },{
+        upsert : true
+    })
+    
+});
+
+
+app.post("/users/add", function(req,res){
+    var newUser = {
+        name : req.body.firstname,
+        age : req.body.age,
+        email : req.body.email
+    }
+    db.users.insert(newUser, function(err,result){
+        if(err){
+            console.log(err);
+        }else{
+            res.redirect('/');
+        }
+    })
 })
 
 app.listen(3030, function(){
