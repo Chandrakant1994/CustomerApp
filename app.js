@@ -30,6 +30,7 @@ app.use(express.static(path.join(__dirname,'public')));
 app.get("/", function(req,res){
 
     db.users.find(function(err,docs){
+        
     res.render("index", {
         users : docs,
         title : "Customers"
@@ -48,12 +49,13 @@ app.delete("/users/delete/:id",function(req,res){
     });
 })
 
-app.put("/users/update/:id", function(req,res){
+app.put("/users/update/:id/:name/:age/:email", function(req,res){
     
+    console.log(req.params);
     db.users.update({_id : ObjectId(req.params.id)}, {
-        name : "Geralt",
-        age : "38",
-        email : "Geralt@gmail.com"
+        name : req.params.name,
+        age : req.params.age,
+        email : req.params.email
     },{
         upsert : true
     })

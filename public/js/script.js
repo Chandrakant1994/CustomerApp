@@ -6,7 +6,13 @@ myapp.controller('c1',angController = function($scope){
     $scope.message = "This is Angular !!"; 
 }); */
 
-angular.module('test', []).controller('testCtrl', function($scope) {
+angular.module('test', ["xeditable"]).controller('testCtrl', function ($scope) {
+
+
   $scope.editMode = false;
-  $scope.name = "John Doe";
+  
+  $scope.firstname = "David";
+
+  
+
 });

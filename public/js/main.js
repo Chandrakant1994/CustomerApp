@@ -4,6 +4,7 @@ $(document).ready(function(){
         deleteUser);
     $('.updateUser').on("click",updateUser);
     
+    
 })
 
 function deleteUser()
@@ -25,13 +26,17 @@ function deleteUser()
 
 function updateUser()
 {   
+    //alert($(this).closest('td').siblings('input.name[type="text"]').text());
     var confirmation = confirm("Are you sure ??");
+    var name = $(this).parent().parent().find('.name').val(); 
+    var age = $(this).parent().parent().find('.age').val(); 
+    var email = $(this).parent().parent().find('.email').val(); 
     if(confirmation){
         $.ajax({
             type : "PUT",
-            url : "/users/update/"+ $(this).data('id')
+            url : "/users/update/"+ $(this).data('id') + "/" + name + "/" + age + "/" + email
         }).done(function(response){
-            window.location.replace("/");
+           // window.location.replace("/");
         });
              window.location.replace("/");      
     }
